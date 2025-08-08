@@ -3,34 +3,15 @@ using System.Collections.Generic;
 
 class Student
 {
-    //static void Main()
-    //{
-    //Console.Write("Enter the Student Name: ");
-    //string inputName = Console.ReadLine();
-
-    //    Console.Write("Enter the Student ID: "); 
-    //    int inputId = int.Parse(Console.ReadLine());
-
-    //    static void ShowData(string name, int id)
-    //    {
-    //        Console.WriteLine($"Student Name: {name}");
-    //        Console.WriteLine($"Student ID: {id}");
-    //    }
-    //    ShowData(inputName, inputId);
-    //}
-
-    // Properties
     public string Name { get; set; }
     public int Id { get; set; }
 
-    // Constructor
-    public Student (string name, int id)
+    public Student(string name, int id)
     {
         Name = name;
         Id = id;
     }
 
-    //Method
     public void ShowData()
     {
         Console.WriteLine($"Student Name: {Name}");
@@ -40,67 +21,47 @@ class Student
 
 class Program
 {
-    //    static void Main()
-    //    {
-    //        Console.Write("Enter the radius: ");
-    //        int heightValue = int.Parse(Console.ReadLine());
-
-    //        if (heightValue % 7 == 0)
-    //        {
-    //            double radius = Math.Pow(heightValue, 2);
-    //            double result = (22 * radius / 7);
-    //            Console.WriteLine($"Luas: {result}");
-    //        }
-    //        else
-    //        {
-    //            double radius = (int)Math.Pow(heightValue, 2);
-    //            double result = 3.14 * radius;
-    //            Console.WriteLine($"Luas: {result}");
-    //        }
-
-    //        Console.Write("Enter the First Number: ");
-    //        int first = int.Parse(Console.ReadLine());
-    //        Console.Write("Enter the Second Number: ");
-    //        int second = int.Parse(Console.ReadLine());
-    //        Console.Write("Enter the Third Number: ");
-    //        int third = int.Parse(Console.ReadLine());
-
-    //        int average = (first + second + third) / 3;
-    //        Console.WriteLine($"The Average is: {average}");
-    //    }
-
     static void Main()
     {
         List<Student> students = new List<Student>();
         List<Student> oddIdStudents = new List<Student>();
+
         int evenCount = 0, oddCount = 0;
 
-        Console.Write("How many students do you want to add? ");
-        int totalStudents;
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("=== Student Data Entry ===\n");
+        Console.ResetColor();
 
+        int totalStudents;
+        Console.Write("How many students do you want to add? ");
         while (!int.TryParse(Console.ReadLine(), out totalStudents) || totalStudents <= 0)
         {
-            Console.WriteLine("Please enter a valid number greater than 0!");
+            Console.WriteLine("❌ Please enter a valid number greater than 0!");
             Console.Write("Add: ");
         }
 
         for (int i = 0; i < totalStudents; i++)
         {
-            Console.WriteLine($"\n Enter data for Student {i + 1}");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"\n--- Enter data for Student {i + 1} ---");
+            Console.ResetColor();
 
-            string name = Console.ReadLine();
-
-            while (string.IsNullOrWhiteSpace(name))
+            // Input name with validation
+            string name;
+            do
             {
-                Console.Write("Name cannot be empty, please enter again: ");
-                name = Console.ReadLine();
-            }
+                Console.Write("Name: ");
+                name = Console.ReadLine()?.Trim();
+                if (string.IsNullOrWhiteSpace(name))
+                    Console.WriteLine("❌ Name cannot be empty!");
+            } while (string.IsNullOrWhiteSpace(name));
 
+            // Input ID with validation
             int id;
             Console.Write("ID (Number only): ");
             while (!int.TryParse(Console.ReadLine(), out id))
             {
-                Console.Write("Please enter a valid ID (Number only): ");
+                Console.Write("❌ Please enter a valid ID (Number only): ");
             }
 
             Student s = new Student(name, id);
@@ -114,21 +75,29 @@ class Program
             else
             {
                 oddCount++;
-                oddIdStudents.Add(s);
+                oddIdStudents.Add(s); // langsung referensi objek yang sama
             }
         }
 
+        // Show all students
+        Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine("\n=== Student List ===");
+        Console.ResetColor();
         foreach (Student s in students)
         {
             s.ShowData();
             Console.WriteLine("---------------------");
         }
 
-        Console.WriteLine($"\nTotal students with even ID: {evenCount}");
-        Console.WriteLine($"Total students with odd ID: {oddCount}");
-
+        // Show counts
         Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"\nTotal students with even ID: {evenCount}");
+        Console.ForegroundColor = ConsoleColor.Magenta;
+        Console.WriteLine($"Total students with odd ID: {oddCount}");
+        Console.ResetColor();
+
+        // Show odd ID students
+        Console.ForegroundColor = ConsoleColor.Magenta;
         Console.WriteLine("\n=== Students with Odd IDs ===");
         Console.ResetColor();
         foreach (Student s in oddIdStudents)
