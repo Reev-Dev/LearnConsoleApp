@@ -21,89 +21,111 @@ class Student
 
 class Program
 {
+    static List<Student> students = new List<Student>();
     static void Main()
     {
-        List<Student> students = new List<Student>();
-        List<Student> oddIdStudents = new List<Student>();
-
-        int evenCount = 0, oddCount = 0;
-
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("=== Student Data Entry ===\n");
-        Console.ResetColor();
-
-        int totalStudents;
-        Console.Write("How many students do you want to add? ");
-        while (!int.TryParse(Console.ReadLine(), out totalStudents) || totalStudents <= 0)
+        bool running = true;
+        while (running)
         {
-            Console.WriteLine("❌ Please enter a valid number greater than 0!");
-            Console.Write("Add: ");
-        }
+            Console.WriteLine("\n=== MENU ===");
+            Console.WriteLine("1. Show All Student");
+            Console.WriteLine("2. Add Student");
+            Console.WriteLine("3. Edit Student");
+            Console.WriteLine("4. Delete Student");
+            Console.WriteLine("5. Exit");
+            Console.Write("Choose menu: ");
 
-        for (int i = 0; i < totalStudents; i++)
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"\n--- Enter data for Student {i + 1} ---");
-            Console.ResetColor();
+            string choice = Console.ReadLine();
 
-            // Input name with validation
-            string name;
-            do
+            switch (choice)
             {
-                Console.Write("Name: ");
-                name = Console.ReadLine()?.Trim();
-                if (string.IsNullOrWhiteSpace(name))
-                    Console.WriteLine("❌ Name cannot be empty!");
-            } while (string.IsNullOrWhiteSpace(name));
-
-            // Input ID with validation
-            int id;
-            Console.Write("ID (Number only): ");
-            while (!int.TryParse(Console.ReadLine(), out id))
-            {
-                Console.Write("❌ Please enter a valid ID (Number only): ");
-            }
-
-            Student s = new Student(name, id);
-            students.Add(s);
-
-            // Check if ID is even or odd
-            if (id % 2 == 0)
-            {
-                evenCount++;
-            }
-            else
-            {
-                oddCount++;
-                oddIdStudents.Add(s); // langsung referensi objek yang sama
+                case "1":
+                     ShowAll();
+                    break;
+                case "2":
+                    AddStudent();
+                    break;
+                case "3":
+                    EditStudent();
+                    break;
+                case "4":
+                    DeleteStudent();
+                    break;
+                case "5":
+                    running = false;
+                    break;
+                default:
+                    Console.WriteLine("Invalid input!");
+                    break;
             }
         }
-
-        // Show all students
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("\n=== Student List ===");
-        Console.ResetColor();
-        foreach (Student s in students)
+    }
+    static void ShowAll()
+    {
+        if (students.Count > 0)
         {
-            s.ShowData();
-            Console.WriteLine("---------------------");
+            Console.WriteLine("\n=== List Student ===");
+            foreach (var s in students)
+            {
+                s.ShowData();
+                Console.WriteLine("--------------------");
+            }
+        } else
+        {
+            Console.WriteLine("Student's Data is Empty");
         }
+    }
+    static void AddStudent()
+    {
+        Console.Write("Enter the name: ");
+        string name = Console.ReadLine();
+        Console.Write("Enter the ID: ");
+        int id = int.Parse(Console.ReadLine());
+        students.Add(new Student(name, id));
+        Console.WriteLine("Student added successfully!");
+    }
+    static void EditStudent()
+    {
+        Console.Write("Input student's ID that you want to edit: ");
+        int id = int.Parse(Console.ReadLine());
 
-        // Show counts
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"\nTotal students with even ID: {evenCount}");
-        Console.ForegroundColor = ConsoleColor.Magenta;
-        Console.WriteLine($"Total students with odd ID: {oddCount}");
-        Console.ResetColor();
+        Student student = students.Find(s => s.Id == id);
 
-        // Show odd ID students
-        Console.ForegroundColor = ConsoleColor.Magenta;
-        Console.WriteLine("\n=== Students with Odd IDs ===");
-        Console.ResetColor();
-        foreach (Student s in oddIdStudents)
+        if(student != null)
         {
-            s.ShowData();
-            Console.WriteLine("---------------------");
+            Console.Write($"New Name for ({student.Name}): ");
+            string newName = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(newName))
+            {
+                student.Name = newName;
+            }
+
+            Console.Write($"New ID for ({student.Id}): ");
+            string newIdInput = Console.ReadLine();
+            if (int.TryParse(newIdInput, out int newId) && newId > 0)
+            {
+                student.Id = newId;
+            }
+
+            Console.WriteLine("Student updated successfully!");
+        } else
+        {
+            Console.WriteLine("Student not found!");
+        }
+    }
+    static void DeleteStudent()
+    {
+        Console.Write("Input student's ID that you want to delete: ");
+        int id = int.Parse(Console.ReadLine());
+        var student = students.Find(s => s.Id == id);
+
+        if (student != null)
+        {
+            students.Remove(student);
+            Console.WriteLine("Student deleted successfully!");
+        } else
+        {
+            Console.WriteLine("Student not found!");
         }
     }
 }
